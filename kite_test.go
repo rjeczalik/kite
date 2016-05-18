@@ -43,16 +43,13 @@ func TestMultiple(t *testing.T) {
 		m := New("mathworker"+strconv.Itoa(i), "0.1."+strconv.Itoa(i))
 		m.Config.DisableAuthentication = true
 		m.Config.Transport = transport
-
+		m.Config.Port = port + 1
 		m.HandleFunc("square", Square)
 
-		go http.ListenAndServe("127.0.0.1:"+strconv.Itoa(port+i), m)
+		go m.Run()
+		<-m.ServerReadyNotify()
 	}
 
-	// Wait until it's started
-	time.Sleep(time.Second * 2)
-
-	fmt.Printf("Creating %d exp clients\n", clientNumber)
 	clients := make([]*Client, clientNumber)
 	for i := 0; i < clientNumber; i++ {
 		cn := New("exp"+strconv.Itoa(i), "0.0.1")
@@ -65,7 +62,6 @@ func TestMultiple(t *testing.T) {
 		clients[i] = c
 	}
 
-	fmt.Printf("Calling mathworker kites with %d conccurent clients randomly\n", clientNumber)
 	timeout := time.After(testDuration)
 
 	// every one second
@@ -109,9 +105,6 @@ func TestConcurrency(t *testing.T) {
 	go mathKite.Run()
 	<-mathKite.ServerReadyNotify()
 
-	// Wait until it's started
-	time.Sleep(time.Second)
-
 	// number of exp kites that will call mathworker kite
 	clientNumber := 3
 
@@ -129,7 +122,7 @@ func TestConcurrency(t *testing.T) {
 		wg.Add(1)
 		go func(i int) {
 			defer wg.Done()
-			result, err := clients[i].TellWithTimeout("ping", 4*time.Second)
+			result, err := clients[i].TellWithTimeout("ping", 8*time.Second)
 			if err != nil {
 				t.Fatal(err)
 			}
