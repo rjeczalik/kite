@@ -30,8 +30,6 @@ func main() {
 	}
 
 	// Connect to remote kite
-	defer kite.Close(kites[1:])
-
 	mathWorker := kites[0]
 	connected, err := mathWorker.DialForever()
 	if err != nil {

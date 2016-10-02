@@ -109,22 +109,6 @@ func (k *Kite) SetupKontrolClient() error {
 // contains Ready to connect Client instances. The caller must connect
 // with Client.Dial() before using each Kite. An error is returned when no
 // kites are available.
-//
-// The returned clients have token renewer running, which is leaked
-// when a single *Client is not closed. A handy utility to ease closing
-// the clients is a Close function:
-//
-//   clients, err := k.GetKites(&protocol.KontrolQuery{Name: "foo"})
-//   if err != nil {
-//       panic(err)
-//   }
-//
-//   // If we want to only use the first result and discard the rest,
-//   // we need to close the rest explicitely.
-//   defer kite.Close(clients[1:])
-//
-//   return clients[0]
-//
 func (k *Kite) GetKites(query *protocol.KontrolQuery) ([]*Client, error) {
 	if err := k.SetupKontrolClient(); err != nil {
 		return nil, err
@@ -170,15 +154,13 @@ func (k *Kite) getKites(args protocol.GetKitesArgs) ([]*Client, error) {
 	}
 
 	// Renew tokens
-	for _, c := range clients {
-		token, err := NewTokenRenewer(c, k)
+	for _, r := range clients {
+		token, err := NewTokenRenewer(r, k)
 		if err != nil {
-			k.Log.Error("Error in token. Token will not be renewed when it expires: %s", err)
+			k.Log.Error("Error in token. Token will not be renewed when it expires: %s", err.Error())
 			continue
 		}
-
 		token.RenewWhenExpires()
-		c.closeRenewer = token.disconnect
 	}
 
 	return clients, nil
