@@ -6,21 +6,11 @@ Kite is a framework for developing micro-services in Go.
 [![GoDoc](http://img.shields.io/badge/go-documentation-brightgreen.svg?style=flat-square)](https://godoc.org/github.com/koding/kite)
 [![Build Status](http://img.shields.io/travis/koding/kite/master.svg?style=flat-square)](https://travis-ci.org/koding/kite)
 
-![Kite](http://i.imgur.com/iNcltPN.png)
+<img src="http://i.imgur.com/iNcltPN.png" align="right"/>
 
+<p>Kite is both the name of the framework and the micro-service that is written by using this framework.  Basically, Kite is a RPC server as well as a client. It connects to other kites and peers to communicate with each other. They can discover other kites using a service called Kontrol, and communicate with them bidirectionaly. The communication protocol uses a WebSocket (or XHR) as transport in order to allow web applications to connect directly to kites.
 
-Kite is both the name of the framework and the micro-service that is written by
-using this framework.  Basically, Kite is a RPC server as well as a client. It
-connects to other kites and peers to communicate with each other. They can
-discover other kites using a service called Kontrol, and communicate with them 
-bidirectionaly. The communication protocol uses a WebSocket (or XHR) as transport 
-in order to allow web applications to connect directly to kites.
-
-Kites can talk with each other by sending
-[dnode](https://github.com/substack/dnode-protocol/blob/master/doc/protocol.markdown)
-messages over a socket session.  If the client knows the URL of the server kite it
-can connect to it directly.  If the URL is not known, client can ask for it
-from Kontrol (Service Discovery).
+Kites can talk with each other by sending [dnode](https://github.com/substack/dnode-protocol/blob/master/doc/protocol.markdown) messages over a socket session.  If the client knows the URL of the server kite it can connect to it directly.  If the URL is not known, client can ask for it from Kontrol (Service Discovery).</p>
 
 For more info checkout the blog post at GopherAcademy which explains Kite in more detail: http://blog.gopheracademy.com/birthday-bash-2014/kite-microservice-library/
 
